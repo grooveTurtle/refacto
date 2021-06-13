@@ -69,6 +69,7 @@
          *        - amountFor
          *        - volumeCredits 
          *        - 각종 total 함수들
+         * 9. 반복문 파이프라인 변경
          */ 
         function statement(invoices, plays) {
             const statementData = {};
@@ -126,20 +127,13 @@
             }
 
             function totalAmount(data) {
-                let result = 0;
-                for (let perf of data.performances) {
-                    result += perf.amount; 
-                }
-                return result;
+                return data.performances
+                       .reduce( (total, p) => total + p.amount, 0);
             }
 
             function totalVolumeCredits(data) {
-                let result = 0;
-                for (let perf of data.performances) {
-                    result += perf.volumeCredits;
-                } 
-
-                return result;
+                return data.performances
+                       .reduce( (total, p) => total + p.volumeCredits, 0);
             }
         }
 
