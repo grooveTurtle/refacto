@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"></script>
+</head>
+<body>
+    
+</body>
+<script type="text/javascript">
+    'use strict';
+    (function($){
+        let invoices = {
+            "customer" : "BigCo",
+            "performances" : [
+                {
+                    "playID" : "hamlet",
+                    "audience" : 55
+                },
+                {
+                    "playID" : "as-like",
+                    "audience" : 35
+                },
+                {
+                    "playID" : "othello",
+                    "audience" : 40
+                }
+            ]
+        };
+        let plays = {
+            "hamlet"   : {"name": "Hamlet", "type": "tragedy"},
+            "as-like"  : {"name": "As You like it", "type": "comedy"},
+            "othello"  : {"name": "Othello", "type": "tragedy"}
+        }
+
+        /**
+         * Let's Refactoring
+         */ 
+        function statement(invoices, plays) {
+            let totalAmount = 0;
+            let volumeCredits = 0;
+            let result = `청구 내역 (고객명: ${invoices.customer})\n`;
+            const format = new Intl.NumberFormat("en-US",  { style: "currency", currency: "USD", minimumFractionDigits: 2}).format;
+    
+            for (let perf of invoices.performances) {
+                const play = plays[perf.playID];
+                let thisAmount = 0;
+    
+                switch (play.type) {
+                    case "tragedy": //비극
+                        thisAmount = 40000;
+                        if (perf.audience > 30 ) {
+                            thisAmount += 1000 * (perf.audience - 30);
+                        }
+                    break;
+                    case "comedy": //코메디
+                        thisAmount = 30000;
+                        if (perf.audience > 20) {
+                            thisAmount += 10000 + 500 * (perf.audience - 20);
+                        }
+                        thisAmount += 300 * perf.audience;
+                    break;
+                    default:
+                        throw new Error(`알수 없는 장르: ${play.type}`);
+                }
+                //포인트를 적립한다.
+                volumeCredits += Math.max(perf.audience - 30, 0);
+                // 희극 관객 5명마다 추가 포인트를 제공한다.
+                if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+
+                //청구 내역을 출력한다.
+                result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience}석)\n`;
+                totalAmount += thisAmount; 
+            }
+
+            result += `총액: ${format(totalAmount/100)}\n`;
+            result += `적립 포인트: ${volumeCredits}점\n`;
+            return result;
+        }
+
+        console.log(statement(invoices, plays));
+        
+    })(jQuery);
+</script>
+</html>
