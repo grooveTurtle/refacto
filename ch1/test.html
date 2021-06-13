@@ -65,6 +65,10 @@
          * - 계산 단계와 포멧팅 단계 분리하기
          *    - renderPlainText() 함수로 전체 분리
          *    - renderPlainText() 에서 필요한 data 구성하기
+         *        - playFor
+         *        - amountFor
+         *        - volumeCredits 
+         *        - 각종 total 함수들
          */ 
         function statement(invoices, plays) {
             const statementData = {};
@@ -154,7 +158,6 @@
             function usd(aNumber) {
                 return new Intl.NumberFormat("en-US",  { style: "currency", currency: "USD", minimumFractionDigits: 2}).format(aNumber/100);
             }
-
         }
 
         console.log(statement(invoices, plays));
