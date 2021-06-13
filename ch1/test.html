@@ -64,16 +64,20 @@
          * 8. 결과 HTML 출력 구조 구성하기
          * - 계산 단계와 포멧팅 단계 분리하기
          *    - renderPlainText() 함수로 전체 분리
-         *    - renderPlainText() 에서 필요한 data 보내기
+         *    - renderPlainText() 에서 필요한 data 구성하기
          */ 
         function statement(invoices, plays) {
-            return renderPlainText(invoices, plays);
+            const statementData = {};
+            statementData.customer = invoices.customer;
+            statementData.performances = invoices.performances;
+
+            return renderPlainText(statementData, invoices, plays);
         }
 
-        function renderPlainText(invoices, plays) {
-            let result = `청구 내역 (고객명: ${invoices.customer})\n`;
+        function renderPlainText(data, invoices, plays) {
+            let result = `청구 내역 (고객명: ${data.customer})\n`;
             
-            for (let perf of invoices.performances) {
+            for (let perf of data.performances) {
                 //청구 내역을 출력한다.
                 result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
             }
@@ -112,7 +116,7 @@
 
             function volumeCreditsFor() {
                 let result = 0;
-                for (let perf of invoices.performances) {
+                for (let perf of data.performances) {
                     result += Math.max(perf.audience - 30, 0);
                     // 희극 관객 5명마다 추가 포인트를 제공한다.
                     if ("comedy" === playFor(perf).type) {
@@ -129,7 +133,7 @@
 
             function totalAmount() {
                 let result = 0;
-                for (let perf of invoices.performances) {
+                for (let perf of data.performances) {
                     result += amountFor(perf); 
                 }
                 return result;
