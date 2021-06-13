@@ -70,15 +70,19 @@
          *        - volumeCredits 
          *        - 각종 total 함수들
          * 9. 반복문 파이프라인 변경
+         * 10. createStatementData 함수 분리
          */ 
         function statement(invoices, plays) {
+            return renderPlainText(createStatementData(invoices, plays));
+        }
+        function createStatementData(invoices, plays) {
             const statementData = {};
             statementData.customer = invoices.customer;
             statementData.performances = invoices.performances.map(enrichPerformance);
             statementData.totalAmount = totalAmount(statementData);
             statementData.totalVolumeCredits = totalVolumeCredits(statementData);
 
-            return renderPlainText(statementData, invoices, plays);
+            return statementData;
 
             function enrichPerformance(aPerformance) {
                 const result = Object.assign({}, aPerformance);
@@ -137,7 +141,7 @@
             }
         }
 
-        function renderPlainText(data, invoices, plays) {
+        function renderPlainText(data) {
             let result = `청구 내역 (고객명: ${data.customer})\n`;
             
             for (let perf of data.performances) {
