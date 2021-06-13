@@ -44,6 +44,13 @@
          * 
          * 1. switch 문 제거 ('함수 추출하기')
          * - amountFor() 함수로 기능 분리
+         * 
+         * 2. amountFor() 함수 변경
+         * - perf -> aPerfomance
+         * - play 인자 제거 
+         *   - playFor() 함수 생성 ('임시 변수를 질의 함수로 바꾸기')
+         *   - playFor() '변수 인라인하기'
+         * - amountFor() '변수 인라인하기'
          */ 
         function statement(invoices, plays) {
             let totalAmount = 0;
@@ -52,7 +59,7 @@
             const format = new Intl.NumberFormat("en-US",  { style: "currency", currency: "USD", minimumFractionDigits: 2}).format;
     
             for (let perf of invoices.performances) {
-                const play = plays[perf.playID];
+                const play = playFor(perf);
                 let thisAmount = amountFor(perf, play);
 
                 //포인트를 적립한다.
@@ -69,22 +76,22 @@
             result += `적립 포인트: ${volumeCredits}점\n`;
             return result;
 
-            function amountFor(perf, play) {
+            function amountFor(aPerformance, play) {
                 let thisAmount = 0;
     
                 switch (play.type) {
                     case "tragedy": //비극
                         thisAmount = 40000;
-                        if (perf.audience > 30 ) {
-                            thisAmount += 1000 * (perf.audience - 30);
+                        if (aPerformance.audience > 30 ) {
+                            thisAmount += 1000 * (aPerformance.audience - 30);
                         }
                     break;
                     case "comedy": //코메디
                         thisAmount = 30000;
-                        if (perf.audience > 20) {
-                            thisAmount += 10000 + 500 * (perf.audience - 20);
+                        if (aPerformance.audience > 20) {
+                            thisAmount += 10000 + 500 * (aPerformance.audience - 20);
                         }
-                        thisAmount += 300 * perf.audience;
+                        thisAmount += 300 * aPerformance.audience;
                     break;
                     default:
                         throw new Error(`알수 없는 장르: ${play.type}`);
@@ -92,6 +99,9 @@
 
                 return thisAmount;
 
+            }
+            function playFor(aPerformance) {
+                return plays[aPerformance.playID];
             }
         }
 
