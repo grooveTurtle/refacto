@@ -1,4 +1,4 @@
-import {createStatementData} from './createStatementData.js';
+import createStatementData from './createStatementData.js';
 
     let invoices = {
         "customer" : "BigCo",
