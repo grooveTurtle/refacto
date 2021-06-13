@@ -51,6 +51,8 @@
          *   - playFor() 함수 생성 ('임시 변수를 질의 함수로 바꾸기')
          *   - playFor() '변수 인라인하기'
          * - amountFor() '변수 인라인하기'
+         * 
+         * 3. volumeCredits(적립금) 처리 함수 추가.
          */ 
         function statement(invoices, plays) {
             let totalAmount = 0;
@@ -61,9 +63,7 @@
             for (let perf of invoices.performances) {
                 
                 //포인트를 적립한다.
-                volumeCredits += Math.max(perf.audience - 30, 0);
-                // 희극 관객 5명마다 추가 포인트를 제공한다.
-                if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+                volumeCredits = volumeCreditsFor(perf);
 
                 //청구 내역을 출력한다.
                 result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience}석)\n`;
@@ -100,6 +100,17 @@
             }
             function playFor(aPerformance) {
                 return plays[aPerformance.playID];
+            }
+
+            function volumeCreditsFor(aPerformance) {
+                let volumeCredits = 0;
+                volumeCredits += Math.max(aPerformance.audience - 30, 0);
+                // 희극 관객 5명마다 추가 포인트를 제공한다.
+                if ("comedy" === playFor(aPerformance).type) {
+                    volumeCredits += Math.floor(aPerformance.audience / 5);
+                }
+
+                return volumeCredits;
             }
         }
 
