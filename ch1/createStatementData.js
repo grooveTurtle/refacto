@@ -52,22 +52,14 @@ export default function createStatementData(invoices, plays) {
     function enrichPerformance(aPerformance) {
         const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
         const result = Object.assign({}, aPerformance);
-        result.play = playFor(result);    
-        result.amount = amountFor(result);
-        result.volumeCredits = volumeCreditsFor(result);
+        result.play = calculator.play;
+        result.amount = calculator.amount;
+        result.volumeCredits = calculator.volumeCredits;
         return result;
     }
 
     function playFor(aPerformance) {
         return plays[aPerformance.playID];
-    }
-
-    function amountFor(aPerformance) {
-        return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount;
-    }
-
-    function volumeCreditsFor(aPerformance) {
-        return new PerformanceCalculator(aPerformance, playFor(aPerformance)).volumeCredits;
     }
 
     function totalAmount(data) {
