@@ -28,6 +28,16 @@ class PerformanceCalculator {
         return result;
     }
 
+    
+    get volumeCredits() {
+        let result = 0;
+        result = Math.max(this.performances.audience - 30, 0);
+        // 희극 관객 5명마다 추가 포인트를 제공한다.
+        if ("comedy" === this.play.type) {
+            result += Math.floor(this.performances.audience / 5);
+        }
+        return result;
+    }
 }
 
 export default function createStatementData(invoices, plays) {
@@ -57,13 +67,7 @@ export default function createStatementData(invoices, plays) {
     }
 
     function volumeCreditsFor(aPerformance) {
-        let result = 0;
-        result = Math.max(aPerformance.audience - 30, 0);
-        // 희극 관객 5명마다 추가 포인트를 제공한다.
-        if ("comedy" === aPerformance.play.type) {
-            result += Math.floor(aPerformance.audience / 5);
-        }
-        return result;
+        return new PerformanceCalculator(aPerformance, playFor(aPerformance)).volumeCredits;
     }
 
     function totalAmount(data) {
