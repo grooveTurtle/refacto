@@ -1,5 +1,7 @@
 import createStatementData from './createStatementData.js';
 
+(function($){
+
     let invoices = {
         "customer" : "BigCo",
         "performances" : [
@@ -55,6 +57,7 @@ import createStatementData from './createStatementData.js';
      *        - 각종 total 함수들
      * 9. 반복문 파이프라인 변경
      * 10. createStatementData 함수 분리
+     * 11. html 출력 함수 추가 (htmlStatement, renderHtml)
      */ 
 
     function statement(invoices, plays) {
@@ -78,4 +81,27 @@ import createStatementData from './createStatementData.js';
         }
     }
 
-    console.log(statement(invoices, plays));
+    function htmlStatement(invoices, plays) {
+        return renderHtml(createStatementData(invoices, plays));
+    }
+
+    function renderHtml(data) {
+        let result = `<h1>청구 내역 (고객명: ${data.customer})</h1>\n`;
+        result += "<table>\n";
+        result += "<tr><th>연극</th><th>좌석 수 </th><th>금액</th></tr>";
+        
+        for (let perf of data.performances) {
+            result += ` <tr><td>${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)</td>`;
+            result += ` <td>${usd(perf.amount)}</td>\n`;
+        }
+        result += "</table>\n";
+        return result;
+
+        function usd(aNumber) {
+            return new Intl.NumberFormat("en-US",  { style: "currency", currency: "USD", minimumFractionDigits: 2}).format(aNumber/100);
+        }
+    }
+
+    $('body').append(htmlStatement(invoices, plays));
+    
+})(jQuery);
